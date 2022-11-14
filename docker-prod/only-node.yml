@@ -1,0 +1,15 @@
+version: '3.8'
+
+services:
+  node-ocr:
+    image: tonyjara/ocr-api:1.0.0
+    container_name: node-ocr
+    restart: unless-stopped
+    ports:
+      - 8000:8000
+    environment:
+      - .env
+    volumes:
+      - $PWD/uploads:/app/uploads
+      - $PWD/logs:/app/logs
+      - $PWD/processed:/app/processed

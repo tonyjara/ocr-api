@@ -1,0 +1,13 @@
+version: '3.8'
+
+services:
+  node-ocr:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: dev
+    image: node-ocr
+    ports:
+      - 8000:8000
+    container_name: node-ocr
+    restart: unless-stopped

@@ -1,0 +1,38 @@
+version: '3.8'
+networks:
+  caddy:
+
+services:
+  ocr-api:
+    image: tonyjara/ocr-api:1.0.0
+    container_name: ocr-api
+    restart: unless-stopped
+    env_file:
+      - .env
+    volumes:
+      - $PWD/uploads:/app/uploads
+      - $PWD/logs:/app/logs
+      - $PWD/processed:/app/processed
+    networks:
+      - caddy
+    ports:
+      - 8000:8000
+
+  caddy:
+    image: caddy:latest
+    restart: unless-stopped
+    container_name: caddy
+    ports:
+      - 80:80
+      - 443:443
+    volumes:
+      - $PWD/caddy/Caddyfile:/etc/caddy/Caddyfile
+      - $PWD/caddy/site:/srv
+      - $PWD/caddy/caddy_data:/data
+      - $PWD/caddy/caddy_config:/config
+    networks:
+      - caddy
+volumes:
+  caddy_data:
+    external: true
+  caddy_config:

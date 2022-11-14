@@ -1,0 +1,17 @@
+Before mounting caddy Create a caddy file on a caddy dir
+
+mkdir caddy
+touch caddy/Caddyfile
+
+run the prod-compose.yml
+
+edit the Caddyfile:
+
+{
+    email your@email.com
+}
+
+yoursubdomain.yourdomain.com {
+    reverse_proxy ocr-api:8000
+}
+
