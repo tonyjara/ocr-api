@@ -7,5 +7,5 @@ spa.traineddata
 
 # media folders
 
-processed/*
-uploads/*
+processed
+uploads
