@@ -33,35 +33,30 @@ const ocrImageAndReturnPdf = async (
 
   const filenameWithNoExtension = filename.replace(/\.[^/.]+$/, '');
 
-  fs.writeFile(
+  await fs.promises.writeFile(
     `processed/${formatedDate}/${filenameWithNoExtension}.pdf`,
-    Buffer.from(pdf.data),
-    async (err) => {
-      if (err) logger.error(err);
-      // await worker.terminate();
-    }
+    Buffer.from(pdf.data)
   );
   return text;
 };
 
-const storage = (uuid: string, formatedDate: string) =>
-  multer.diskStorage({
+const storage = (uuid: string, formatedDate: string) => {
+  return multer.diskStorage({
     destination: (req, file, cb) => {
       cb(null, `uploads/${formatedDate}`);
     },
     filename: (req, file, cb) => {
       const filename = `${uuid} ${file.originalname}`;
+
       cb(null, filename);
     },
   });
+};
+
 
 const makeDirs = async (formatedDate: string) => {
-  fs.mkdir(`processed/${formatedDate}`, { recursive: true }, async (err) => {
-    if (err) logger.error(err);
-  });
-  fs.mkdir(`uploads/${formatedDate}`, { recursive: true }, async (err) => {
-    if (err) logger.error(err);
-  });
+  await fs.promises.mkdir(`processed/${formatedDate}`, { recursive: true });
+  await fs.promises.mkdir(`uploads/${formatedDate}`, { recursive: true });
 };
 
 export const ocrImageUpload = async (
@@ -75,26 +70,21 @@ export const ocrImageUpload = async (
 
     await makeDirs(formatedDate);
 
-    const upload = multer({ storage: storage(uuid, formatedDate) }).single(
+    const upload = multer({
+      storage: storage(uuid, formatedDate),
+    }).single(
       'image' //key of the multipart form request
     );
     upload(req, res, async () => {
       const filename = `${uuid} ${req.file?.originalname}`;
 
-      fs.readFile(
-        `uploads/${formatedDate}/${filename}`,
-        async (err, buffer) => {
-          if (err) logger.error(err);
-
-          const text = await ocrImageAndReturnPdf(
-            buffer,
-            filename,
-            formatedDate
-          );
-          logger.info(`finished scanning ${filename}`);
-          res.status(200).json({ uuid, text });
-        }
+      const buffer = await fs.promises.readFile(
+        `uploads/${formatedDate}/${filename}`
       );
+      const text = await ocrImageAndReturnPdf(buffer, filename, formatedDate);
+      logger.info(`finished scanning ${filename}`);
+
+      res.status(200).json({ uuid, text });
     });
   } catch (err) {
     logger.error(err);

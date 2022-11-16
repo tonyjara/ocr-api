@@ -22,6 +22,7 @@ app.use(hpp()); //HTTP parameter pollution
 app.use(helmet()); // Sets default headers
 app.use(apiKeyMiddleware);
 app.use(limiter);
+app.use(express.json());
 
 // Routes
 app.use('/api', router);

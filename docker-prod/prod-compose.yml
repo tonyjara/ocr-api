@@ -4,7 +4,7 @@ networks:
 
 services:
   ocr-api:
-    image: tonyjara/ocr-api:1.0.0
+    image: tonyjara/ocr-api:latest
     container_name: ocr-api
     restart: unless-stopped
     env_file:
