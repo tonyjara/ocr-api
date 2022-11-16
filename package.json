@@ -9,7 +9,7 @@
     "build": "tsc -p .",
     "lint-watch": "tsc --noEmit --incremental --watch",
     "test": "mocha -r ts-node/register 'tests/**/*.ts'",
-    "build:docker:prod:push": "tsc -p . && docker buildx build --push --platform linux/amd64,linux/arm64 -t tonyjara/ocr-api:1.0.1 -t tonyjara/ocr-api:latest --builder=mybuilder --target=prod .",
+    "build:docker:prod:push": "tsc -p . && docker buildx build --push --platform linux/amd64,linux/arm64 -t tonyjara/ocr-api:1.0.2 -t tonyjara/ocr-api:latest --builder=mybuilder --target=prod .",
     "build:docker:prod:load": "tsc -p . && docker buildx build --load -t tonyjara/ocr-api --builder=mybuilder --target=prod .",
     "build:docker:prod:local": "tsc -p . && docker build -t tonyjara/ocr-api --target=prod .",
     "docker:prod": "docker run -p 8000:8000 -e OCR_LANG=spa -e CREDENTIALS=true -e LOG_DIR=../logs -e LOG_FORMAT=dev -e PORT=8000 -e API_KEY=my_api_key -e ORIGIN=* tonyjara/ocr-api",

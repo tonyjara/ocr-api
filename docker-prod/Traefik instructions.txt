@@ -1,0 +1,8 @@
+Create a dir for the app
+
+Copy .env.template and replace data accordingly
+Copy traefik.yml and replace emails
+Copy traefik-compose.yml, rename to docker-compose.yml, feel free to change the certresolver to staging if you wish to run tests before.
+Create acme.json and change it's permissions to 600
+touch acme.json
+sudo chmod 600 acme.json

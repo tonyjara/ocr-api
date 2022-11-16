@@ -1,0 +1,32 @@
+version: '3.8'
+services:
+  traefik:
+    image: traefik
+    # If a container exposes multiple ports, or does not expose any port, then you must manually specify which port Traefik should use for communication by using the label traefik.http.services.<service_name>.loadbalancer.server.port
+    ports:
+      - 80:80
+      - 443:443
+    volumes:
+      # So that Traefik can listen to the Docker events
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+      - ./acme.json:/acme.json
+      - $PWD:/etc/traefik
+
+    restart: unless-stopped
+  ocr-api:
+    image: tonyjara/ocr-api:latest
+    container_name: ocr-api
+    restart: unless-stopped
+    env_file:
+      - .env
+    volumes:
+      - $PWD/uploads:/app/uploads
+      - $PWD/logs:/app/logs
+      - $PWD/processed:/app/processed
+    labels:
+      - traefik.enable=true
+      - traefik.http.routers.ocr-api.entrypoints=websecure
+      - traefik.http.routers.ocr-api.rule=Host(`${PRIMARY_DOMAIN}`)
+      - traefik.http.routers.ocr-api.tls=true
+      - traefik.http.routers.ocr-api.tls.certresolver=production
+      - traefik.http.services.traefik-service.loadbalancer.server.port=8000

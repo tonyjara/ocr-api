@@ -68,6 +68,7 @@ For production you can find files under the docker-prod dir. Don't forget to cre
 - Docker compose
 - Ocr to pdf
 - Easy ssl setup with caddy
+- Reverse proxy option with traefik
 
 ## Known issues
 

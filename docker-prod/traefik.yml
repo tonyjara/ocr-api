@@ -1,0 +1,42 @@
+# INSTRUCTIONS
+# Replace email with your mail
+
+global:
+  sendAnonymousUsage: false #enabled by default
+# Log:
+log:
+  level: INFO # DEBUG, INFO, WARNING, ERROR, CRITICAL
+
+entryPoints:
+  web:
+    address: ':80'
+    #Redirect to HTTPS
+    http:
+      redirections:
+        entryPoint:
+          to: websecure
+          scheme: https
+  websecure:
+    address: ':443'
+
+certificatesResolvers:
+  staging:
+    acme:
+      email: mymail@email.com # REPLACE THIS
+      # storage of acme.json is hanlded through volumes on traefik container
+      caServer: 'https://acme-staging-v02.api.letsencrypt.org/directory'
+      httpChallenge:
+        # used during the challenge
+        entryPoint: web
+  production:
+    acme:
+      email: mymail@email.com # REPLACE THIS
+      # storage of acme.json is hanlded through volumes on traefik container
+      caServer: 'https://acme-v02.api.letsencrypt.org/directory'
+      httpChallenge:
+        # used during the challenge
+        entryPoint: web
+
+providers:
+  docker:
+    exposedByDefault: false
